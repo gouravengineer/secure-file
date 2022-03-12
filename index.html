@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div>
+  <input type="file">
+  <button id="Encrypt">Encrypt here</button>
+  <button id="Decrypt">Decrypt here</button>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <script>
+function arrayBufferToWordArray(ab) {
+      var i8a = new Uint8Array(ab);
+      var a = [];
+      for (var i = 0; i < i8a.length; i += 4) {
+        a.push(i8a[i] << 24 | i8a[i + 1] << 16 | i8a[i + 2] << 8 | i8a[i + 3]);
+      }
+      return CryptoJS.lib.WordArray.create(a, i8a.length);
+    }
+
+    function WordArrayToArrayBuffer(wordArray) {
+        const l = wordArray.sigBytes;
+        const words = wordArray.words;
+        const result = new Uint8Array(l);
+        var i=0 /*dst*/, j=0 /*src*/;
+        while(true) {
+            // here i is a multiple of 4
+            if (i==l)
+                break;
+            var w = words[j++];
+            result[i++] = (w & 0xff000000) >>> 24;
+            if (i==l)
+                break;
+            result[i++] = (w & 0x00ff0000) >>> 16;
+             if (i==l)
+                break;
+            result[i++] = (w & 0x0000ff00) >>> 8;
+            if (i==l)
+                break;
+            result[i++] = (w & 0x000000ff);
+        }
+        return result.buffer;
+    }
+$('#Decrypt').click(async function(){
+  var myText=$('input').prop('files')
+  data= await myText[0].arrayBuffer()
+  dtype= await myText[0].type
+  name= await myText[0].name
+  console.log(data,name,dtype)
+
+  //var wa = arrayBufferToWordArray(data)
+  var string = new TextDecoder().decode(data);
+
+  // console.log(string)
+  var decrypted = CryptoJS.AES.decrypt(string, "secret key 123")
+  // decrypted=decrypted.toString(CryptoJS.enc.Utf8)
+  console.log(decrypted)
+  if (!("TextEncoder" in window)){ 
+          alert("Sorry, this browser does not support TextEncoder...");
+    }
+   
+  var blob = new Blob([WordArrayToArrayBuffer(decrypted)], {type: dtype});
+  var objectUrl = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+    a.setAttribute('href', objectUrl);
+    a.setAttribute('download',  "dec_"+ name.slice(4));
+
+    var aj = $(a);
+    aj.appendTo('body');
+    console.log(aj[0]);
+    aj[0].click();
+    aj.remove();
+
+
+});
+
+  $('#Encrypt').click(async function(){
+    var myText=$('input').prop('files')
+    data= await myText[0].arrayBuffer()
+    dtype= await myText[0].type
+    name = await myText[0].name
+
+    // console.log(data)
+    var wa = arrayBufferToWordArray(data)
+    
+    var ciphertext = CryptoJS.AES.encrypt(wa, 'secret key 123').toString();
+    // console.log(ciphertext)
+    ciphertext=ciphertext
+    if (!("TextEncoder" in window)){ 
+          alert("Sorry, this browser does not support TextEncoder...");
+    }
+    var enc = new TextEncoder(); // always utf-8
+    // enc.encode(ciphertext));
+    // console.log(ciphertext)
+        
+
+    console.log(ciphertext)
+      var blob = new Blob([enc.encode(ciphertext)], {type: dtype});
+      var objectUrl = URL.createObjectURL(blob);
+      // console.log(blob)
+      // console.log(objectUrl)
+      // window.open(objectUrl);
+      // $('#encbutton').attr("href",objectUrl)
+      // $('#encbutton').attr("download","enc_"+name)
+      var a = document.createElement('a');
+      a.setAttribute('href', objectUrl);
+      a.setAttribute('download', "enc_" + name);
+
+    var aj = $(a);
+    aj.appendTo('body');
+    console.log(aj[0]);
+    aj[0].click();
+   aj.remove();
+
+    // console.log("BYTES", WordArrayToArrayBuffer(wordArrayDecrypted), wordArrayDecrypted.toString(CryptoJS.enc.Utf8))
+
+  });
+
+  </script>
+</body>
+</html>
