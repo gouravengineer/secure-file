@@ -8,7 +8,9 @@
 </head>
 <body>
   <div>
-  <input type="file">
+  <label>Password<input type="text" name="password" id="password"></label>
+  <br><br>
+  <input type="file" id="file">
   <button id="Encrypt">Encrypt here</button>
   <button id="Decrypt">Decrypt here</button>
   </div>
@@ -48,8 +50,8 @@ function arrayBufferToWordArray(ab) {
         return result.buffer;
     }
 $('#Decrypt').click(async function(){
-  var myText=$('input').prop('files')
-  data= await myText[0].arrayBuffer()
+  var myText=$('#file').prop('files')
+  data= await myText[0].arrayBuffer()   //array buffer
   dtype= await myText[0].type
   name= await myText[0].name
   console.log(data,name,dtype)
@@ -58,9 +60,10 @@ $('#Decrypt').click(async function(){
   var string = new TextDecoder().decode(data);
 
   // console.log(string)
-  var decrypted = CryptoJS.AES.decrypt(string, "secret key 123")
+  var password = $('#password').val()
+  var decrypted = CryptoJS.AES.decrypt(string,password)
   // decrypted=decrypted.toString(CryptoJS.enc.Utf8)
-  console.log(decrypted)
+  // console.log(decrypted)
   if (!("TextEncoder" in window)){ 
           alert("Sorry, this browser does not support TextEncoder...");
     }
@@ -81,15 +84,15 @@ $('#Decrypt').click(async function(){
 });
 
   $('#Encrypt').click(async function(){
-    var myText=$('input').prop('files')
+    var myText=$('#file').prop('files')
     data= await myText[0].arrayBuffer()
     dtype= await myText[0].type
     name = await myText[0].name
 
     // console.log(data)
     var wa = arrayBufferToWordArray(data)
-    
-    var ciphertext = CryptoJS.AES.encrypt(wa, 'secret key 123').toString();
+    var password=$('#password').val()
+    var ciphertext = CryptoJS.AES.encrypt(wa,password).toString();
     // console.log(ciphertext)
     ciphertext=ciphertext
     if (!("TextEncoder" in window)){ 
