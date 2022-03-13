@@ -4,15 +4,38 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    #password{
+      position: relative;
+  width: 156px;
+  height: 25px;
+  background: #ffffff;
+  margin-left: 8px;
+  border: 1px solid #000000;
+  box-sizing: border-box;
+  border-radius: 4px;
+    }
+  #Encrypt,#Decrypt,#file{
+    margin: 12px 5px 0px 2px;
+    padding: 4px;
+  }
+  #file{
+    margin: 2px 0px 5px 2px;
+    padding: 4px;
+  }
+
+  </style>
   <title>Document</title>
 </head>
 <body>
   <div>
-  <label>Password<input type="text" name="password" id="password"></label>
+    <br>
+  <label style="padding-top: 20px !important;">Password  <input type="text" name="password" id="password"></label>
   <br><br>
   <input type="file" id="file">
-  <button id="Encrypt">Encrypt here</button>
-  <button id="Decrypt">Decrypt here</button>
+  <br>
+  <button id="Encrypt">Encrpyt Here</button>
+  <button id="Decrypt">Decrypt Here</button>
   </div>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
