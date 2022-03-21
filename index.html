@@ -1,114 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-  <style>
-    hr{
-      border-color: #91a8cc;
-    }
-    body{
-      background-color: #f7f5f2;
-    }
-    #secret_kepper{
-      height: 45px;
-      display: flex;
-      text-align: center;
-      flex-direction: column;
-      font-family: 'Red Rose';
-      font-style: normal;
-      font-weight: 400;
-      font-size: 55px;
-      line-height: 45px;
-      display: flex;
-      align-items: center;
+  <title>Secret Keeper</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Open+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
 
-      /*color: #C3073F;*/
-      color: #C20606;
-
-      text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    }
-    #password,#pass{
-      position: relative;
-      width: 180px;
-      background-color: #fcefe3;
-      margin-left: 12px;
-      border: 1px solid #ffddab;
-      box-sizing: border-box;
-      height: 35px;
-      border-radius: 4px;
-      margin: 5px 0px 9px 0px;
-    }
-    #Encrypt,#Decrypt,#Encrypt-text,#Decrypt-text{
-      position: relative;
-      margin: 12px 10px 10px 5px;
-      padding: 3px;
-      width: 100%;
-      background: #38615d;
-      border-radius: 7px;
-      font-family: 'Unna';
-      font-style: normal;
-      font-weight: 300;
-      font-size: 16px;
-      line-height: 20px;
-      color: #ffffff;
-    }
-    #file{
-      margin: 40px 0px 0px 0px;
-      padding: 5px;
-    }
-    textarea{
-      background-color: #f7f7f7;
-      border: 2px solid #f09a1a;
-      border-radius: 8px;
-    }
-    #copy{
-      border: 1px solid #ffddab;
-      box-sizing: border-box;
-      border-radius: 4px;
-      background-color:#38615d;
-      color: white;
-    }
-
-  </style>
 </head>
-<body>
-  <p id="secret_kepper">Secret Kepper</p>
-  <hr>
-  <div style="align-items: center;display: flex; flex-direction: column;">
-    <input type="file" id="file">
-    <label style="padding-top: 20px !important;">Password:  <input type="text" name="password" id="password" placeholder="Password"></label>
-    <div style="display: grid; grid-template-columns: 50% 50%">
-      <button id="Encrypt">Download Encrypted</button>
-      <button id="Decrypt">Download Decrpyted</button>
-    </div>
-  </div>
-  <br>
-  <br>
-  <hr>
-<br>
-  <div style="display: flex;align-items: center;flex-direction: column;">
-    <label for="pass">Password: <input type="text" name="pass" id="pass" placeholder="Password"></label>
-    <br>
-    <!-- <input type="text" name="text" id="text"> -->
-    <div style="display: grid; grid-template-columns: 80% 20%;">
-      <textarea cols="50" rows="8" placeholder="Text"></textarea>
-        <button id="copy" style="margin-top: 100%; width: 60%; height: 25%;">copy</button>
-    </div>
-    <br>
 
-    <span style="display:grid;grid-template-columns: 180px 180px;">
-    <button id="Encrypt-text">View Encrypted</button>
-    <button id="Decrypt-text">View Decrypted</button>
-    </span>
+<body>
+  
+  <h1 id="title">Secret Keeper</h1>
+  <div class="container">
+    <div class="card">
+      <h3>Files</h3>
+      <div class="content-div">
+        <input class="password-input" type="password" name="password" id="password" placeholder="Password">
+        <div class="content">
+          <label class="upload-file">
+            Select Your File
+            <input style="display: none" type="file" id="file">
+          </label>
+          
+        </div>
+        <p style="color:darkred;"></p>
+        <div class="crypto-buttons">
+          <button id="Encrypt">Encrypt</button>
+          <button id="Decrypt">Decrpyt</button>
+        </div>
+      </div>
+    </div>
+    <div class="card-2">
+      <h3>Text</h3>
+      <div class="content-div-2">
+         <input type="password" name="pass" id="pass" placeholder="Password">
+        <div class="text">
+          <textarea placeholder="Text"></textarea>
+          <div class="copy-div">
+            <button id="copy">copy</button>
+          </div>
+        </div>
+        <div class="crypto-buttons">
+          <button id="Encrypt-text">Encrypt</button>
+          <button id="Decrypt-text">Decrypt</button>
+        </div>
+      </div>
+    </div>    
   </div>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
   <script>
+    $('#file').change(async function(){
+      var myText = $('#file').prop('files')
+      name = await myText[0].name
+      console.log(name)
+      // $('p').empty();
+      $('p').html(name);
+    });
 
-function arrayBufferToWordArray(ab) {
+
+
+    function arrayBufferToWordArray(ab) {
       var i8a = new Uint8Array(ab);
       var a = [];
       for (var i = 0; i < i8a.length; i += 4) {
@@ -118,104 +77,104 @@ function arrayBufferToWordArray(ab) {
     }
 
     function WordArrayToArrayBuffer(wordArray) {
-        const l = wordArray.sigBytes;
-        const words = wordArray.words;
-        const result = new Uint8Array(l);
-        var i=0 /*dst*/, j=0 /*src*/;
-        while(true) {
-            // here i is a multiple of 4
-            if (i==l)
-                break;
-            var w = words[j++];
-            result[i++] = (w & 0xff000000) >>> 24;
-            if (i==l)
-                break;
-            result[i++] = (w & 0x00ff0000) >>> 16;
-             if (i==l)
-                break;
-            result[i++] = (w & 0x0000ff00) >>> 8;
-            if (i==l)
-                break;
-            result[i++] = (w & 0x000000ff);
-        }
-        return result.buffer;
+      const l = wordArray.sigBytes;
+      const words = wordArray.words;
+      const result = new Uint8Array(l);
+      var i = 0 /*dst*/, j = 0 /*src*/;
+      while (true) {
+        // here i is a multiple of 4
+        if (i == l)
+          break;
+        var w = words[j++];
+        result[i++] = (w & 0xff000000) >>> 24;
+        if (i == l)
+          break;
+        result[i++] = (w & 0x00ff0000) >>> 16;
+        if (i == l)
+          break;
+        result[i++] = (w & 0x0000ff00) >>> 8;
+        if (i == l)
+          break;
+        result[i++] = (w & 0x000000ff);
+      }
+      return result.buffer;
     }
-  $("#copy").click(function(){
-    $("textarea").select();
-    document.execCommand('copy');
+    $("#copy").click(function () {
+      $("textarea").select();
+      document.execCommand('copy');
     });
-  $("#Encrypt-text").click(function(){
-    var data=$('textarea').val()
-    var password=$('#pass').val()
-    var ciphertext = CryptoJS.AES.encrypt(data,password).toString();
-    $('textarea').val(ciphertext)
-  });
-  $('#Decrypt-text').click(function(){
-    var data=$('textarea').val()
-    // console.log(data)
-    var password=$('#pass').val()
-    // console.log(password)
-    var decrypt=CryptoJS.AES.decrypt(data,password).toString();
-    // console.log(decrypt)
-    var decrypted_text=decodeURIComponent(decrypt.replace(/\s+/g, '').replace(/[0-9a-f]{2}/g, '%$&'));
-    $('textarea').val(decrypted_text)
-  });
-$('#Decrypt').click(async function(){
-  var myText=$('#file').prop('files')
-  data= await myText[0].arrayBuffer()   //array buffer
-  dtype= await myText[0].type
-  name= await myText[0].name
-  console.log(data,name,dtype)
+    $("#Encrypt-text").click(function () {
+      var data = $('textarea').val()
+      var password = $('#pass').val()
+      var ciphertext = CryptoJS.AES.encrypt(data, password).toString();
+      $('textarea').val(ciphertext)
+    });
+    $('#Decrypt-text').click(function () {
+      var data = $('textarea').val()
+      // console.log(data)
+      var password = $('#pass').val()
+      // console.log(password)
+      var decrypt = CryptoJS.AES.decrypt(data, password).toString();
+      // console.log(decrypt)
+      var decrypted_text = decodeURIComponent(decrypt.replace(/\s+/g, '').replace(/[0-9a-f]{2}/g, '%$&'));
+      $('textarea').val(decrypted_text)
+    });
+    $('#Decrypt').click(async function () {
+      var myText = $('#file').prop('files')
+      data = await myText[0].arrayBuffer()   //array buffer
+      dtype = await myText[0].type
+      name = await myText[0].name
+      // console.log(data, name, dtype)
 
-  //var wa = arrayBufferToWordArray(data)
-  var string = new TextDecoder().decode(data);
+      //var wa = arrayBufferToWordArray(data)
+      var string = new TextDecoder().decode(data);
 
-  // console.log(string)
-  var password = $('#password').val()
-  var decrypted = CryptoJS.AES.decrypt(string,password)
-  // decrypted=decrypted.toString(CryptoJS.enc.Utf8)
-  // console.log(decrypted)
-  if (!("TextEncoder" in window)){ 
-          alert("Sorry, this browser does not support TextEncoder...");
-    }
-   
-  var blob = new Blob([WordArrayToArrayBuffer(decrypted)], {type: dtype});
-  var objectUrl = URL.createObjectURL(blob);
-  var a = document.createElement('a');
-    a.setAttribute('href', objectUrl);
-    a.setAttribute('download',  "dec_"+ name.slice(4));
+      // console.log(string)
+      var password = $('#password').val()
+      var decrypted = CryptoJS.AES.decrypt(string, password)
+      // decrypted=decrypted.toString(CryptoJS.enc.Utf8)
+      // console.log(decrypted)
+      if (!("TextEncoder" in window)) {
+        alert("Sorry, this browser does not support TextEncoder...");
+      }
 
-    var aj = $(a);
-    aj.appendTo('body');
-    console.log(aj[0]);
-    aj[0].click();
-    aj.remove();
+      var blob = new Blob([WordArrayToArrayBuffer(decrypted)], { type: dtype });
+      var objectUrl = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.setAttribute('href', objectUrl);
+      a.setAttribute('download', "dec_" + name.slice(4));
+
+      var aj = $(a);
+      aj.appendTo('body');
+      console.log(aj[0]);
+      aj[0].click();
+      aj.remove();
 
 
-});
+    });
 
-  $('#Encrypt').click(async function(){
-    var myText=$('#file').prop('files')
-    data= await myText[0].arrayBuffer()
-    dtype= await myText[0].type
-    name = await myText[0].name
+    $('#Encrypt').click(async function () {
+      var myText = $('#file').prop('files')
+      data = await myText[0].arrayBuffer()
+      dtype = await myText[0].type
+      name = await myText[0].name
 
-    // console.log(data)
-    var wa = arrayBufferToWordArray(data)
-    var password=$('#password').val()
-    var ciphertext = CryptoJS.AES.encrypt(wa,password).toString();
-    // console.log(ciphertext)
-    ciphertext=ciphertext
-    if (!("TextEncoder" in window)){ 
-          alert("Sorry, this browser does not support TextEncoder...");
-    }
-    var enc = new TextEncoder(); // always utf-8
-    // enc.encode(ciphertext));
-    // console.log(ciphertext)
-        
+      // console.log(data)
+      var wa = arrayBufferToWordArray(data)
+      var password = $('#password').val()
+      var ciphertext = CryptoJS.AES.encrypt(wa, password).toString();
+      // console.log(ciphertext)
+      ciphertext = ciphertext
+      if (!("TextEncoder" in window)) {
+        alert("Sorry, this browser does not support TextEncoder...");
+      }
+      var enc = new TextEncoder(); // always utf-8
+      // enc.encode(ciphertext));
+      // console.log(ciphertext)
 
-    console.log(ciphertext)
-      var blob = new Blob([enc.encode(ciphertext)], {type: dtype});
+
+      console.log(ciphertext)
+      var blob = new Blob([enc.encode(ciphertext)], { type: dtype });
       var objectUrl = URL.createObjectURL(blob);
       // console.log(blob)
       // console.log(objectUrl)
@@ -226,16 +185,17 @@ $('#Decrypt').click(async function(){
       a.setAttribute('href', objectUrl);
       a.setAttribute('download', "enc_" + name);
 
-    var aj = $(a);
-    aj.appendTo('body');
-    console.log(aj[0]);
-    aj[0].click();
-   aj.remove();
+      var aj = $(a);
+      aj.appendTo('body');
+      console.log(aj[0]);
+      aj[0].click();
+      aj.remove();
 
-    // console.log("BYTES", WordArrayToArrayBuffer(wordArrayDecrypted), wordArrayDecrypted.toString(CryptoJS.enc.Utf8))
+      // console.log("BYTES", WordArrayToArrayBuffer(wordArrayDecrypted), wordArrayDecrypted.toString(CryptoJS.enc.Utf8))
 
-  });
+    });
 
   </script>
 </body>
+
 </html>
